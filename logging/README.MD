@@ -1,3 +1,10 @@
+Helps study the difference between log.error and log.exception.
+- exception includes the stacktrace but error does not.
+- if using the exception the instance is not valueable. Best to let the loghandler impl
+  take care of picking up stacktrace etc.
+
+== Output ==
+
 2014-06-13 10:38:03,569 - test_logger - INFO - ====== Exeption block with instance. ======
 2014-06-13 10:38:03,569 - test_logger - ERROR - using log.error Doctor Who!
 2014-06-13 10:38:03,569 - test_logger - ERROR - using log.exception Doctor Who!
