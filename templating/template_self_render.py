@@ -49,14 +49,14 @@ def render_with_self(template_dict):
                 null_rendered = Template(v).render({})
                 if rendered != null_rendered:
                     context[k] = rendered
-                to_render
+                del to_render[k]
             except:
                 msg = sys.exc_info()[1].message
                 first_quote = msg.find('\'')
                 start = first_quote + 1
                 end = first_quote + msg[first_quote + 1:].find('\'') + 1
                 dependency[k] = msg[start: end]
-                # print k, 'Failed to render.', msg
+                print k, 'Failed to render.', msg
         if is_circular(dependency):
             print 'Circular dependency found.'
             break
@@ -66,6 +66,13 @@ def render_with_self(template_dict):
 print '----------'
 render_with_self({
     'a': 1,
+    'b': '{{a}}',
+    'c': '{{a}} {{b}}'
+})
+
+print '\n----------'
+render_with_self({
+    'a': {'x': 1},
     'b': '{{a}}',
     'c': '{{a}} {{b}}'
 })
@@ -98,4 +105,12 @@ render_with_self({
     'c': '{{d}}',
     'd': '{{e}}',
     'e': '{{a}}'
+})
+
+print '\n----------'
+render_with_self({
+    'a': '{{b}} {{c}}',
+    'b': '{{c}}',
+    'c': '{{d}}',
+    'd': '1'
 })
