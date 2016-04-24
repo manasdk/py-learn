@@ -12,13 +12,13 @@ class QuickSorter(object):
         self.sortee = nums
 
     def sort(self):
-        self._divide_n_conquer(
+        self._quicksort(
             0,
             len(self.sortee) - 1,
             self._pick_pivot_index(0, len(self.sortee) - 1))
         return self.sortee
 
-    def _divide_n_conquer(self, l_idx, r_idx, p_idx):
+    def _quicksort(self, l_idx, r_idx, p_idx):
 
         l = l_idx
         r = r_idx
@@ -40,11 +40,11 @@ class QuickSorter(object):
 
         left_r_idx = p_idx - 1
         if left_r_idx > l_idx:
-            self._divide_n_conquer(l_idx, left_r_idx, self._pick_pivot_index(l_idx, left_r_idx))
+            self._quicksort(l_idx, left_r_idx, self._pick_pivot_index(l_idx, left_r_idx))
 
         right_l_idx = p_idx + 1
         if right_l_idx < r_idx:
-            self._divide_n_conquer(right_l_idx, r_idx, self._pick_pivot_index(right_l_idx, r_idx))
+            self._quicksort(right_l_idx, r_idx, self._pick_pivot_index(right_l_idx, r_idx))
 
     def _pick_pivot_index(self, l_idx, r_idx):
         # use r_idx as the pivot index. Its just a working choice for now.
