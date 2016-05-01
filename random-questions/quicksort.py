@@ -1,8 +1,13 @@
 #! /usr/bin/env python
 
 import argparse
-import time
+import os.path
 
+
+"""
+This impl is instructional. If you need something efficient then use list.sort
+which is orders of magnitude faster than this impl.
+"""
 
 class QuickSorter(object):
 
@@ -51,20 +56,52 @@ class QuickSorter(object):
         return r_idx
 
 
+def read_nums(args_):
+    if args_.nums:
+        return args_.nums
+    elif args_.numfile:
+        nums = []
+        with open(os.path.expanduser(args_.numfile), 'r') as f:
+            for num in f:
+                nums.append(int(num))
+        return nums
+    return []
+
+
+def validate_sort(nums):
+    for idx, num in enumerate(nums):
+        if idx == 0:
+            continue
+        if nums[idx] < nums[idx-1]:
+            raise ValueError('Expected ascending order.')
+
+
 def main(args_):
-    print args_.nums
-    start  = time.time()
-    quicksorter = QuickSorter(args_.nums)
-    end  = time.time()
-    print quicksorter.sort()
-    print 'Sorted in %ds' % (end - start)
+    print '[Start] reading'
+    nums = read_nums(args_)
+    print '[End] reading'
+    if len(nums) < 20:
+        print nums
+    print '[Start] sorting %d numbers' % len(nums)
+    quicksorter = QuickSorter(nums)
+    nums = quicksorter.sort()
+    print '[End] sorting'
+    if len(nums) <= 20:
+        print nums
+    else:
+        validate_sort(nums)
 
 
 #
-# Run with ./quicksort.py -n 9 7 5 11 12 2 14 3 10 6
+# Run with 
+# ./quicksort.py -n 9 7 5 11 12 2 14 3 10 6
+#            OR
+# ./quicksort.py --numfile ~/tmp/100000.txt
 #
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n','--nums', nargs='+', type=int, required=True)
+    g = parser.add_mutually_exclusive_group(required=True)
+    g.add_argument('-n','--nums', nargs='+', type=int)
+    g.add_argument('-f','--numfile', type=str)
     args_ = parser.parse_args()
     main(args_)
