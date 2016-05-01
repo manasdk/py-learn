@@ -16,6 +16,7 @@ class QueenPlacer(object):
 		self.board_size = board_size
 		self.queen_locations = [None for _ in xrange(self.board_size)]
 		self.solution_count = 0
+		self.saved_computations = {}
 
 	def place_queens(self):
 		idx = 0
@@ -41,26 +42,31 @@ class QueenPlacer(object):
 		for location in self.queen_locations:
 			if location is None:
 				continue
-			# block row and column
-			for i in xrange(self.board_size):
-				blocked.add('%d:%d' % (location[0], i))
-				blocked.add('%d:%d' % (i, location[1]))
-			
-			# block left diag
-			m = 1
-			c = location[1] - location[0]
-			for x_ld in xrange(0, self.board_size):
-				y_ld = m * x_ld + c
-				if y_ld < self.board_size and y_ld > -1:
-					blocked.add('%d:%d' % (x_ld, y_ld))
-			
-			# block right diag
-			m = -1
-			c = location[0] + location[1]
-			for x_rd in xrange(0, self.board_size):
-				y_rd = m * x_rd + c
-				if y_rd < self.board_size and y_rd > -1:
-					blocked.add('%d:%d' % (x_rd, y_rd))
+			location_repr = '%d:%d' % location
+			blocked_for_loc = self.saved_computations.get(location_repr, set())
+			self.saved_computations[location_repr] = blocked_for_loc
+			if not blocked_for_loc:
+				# block row and column
+				for i in xrange(self.board_size):
+					blocked_for_loc.add('%d:%d' % (location[0], i))
+					blocked_for_loc.add('%d:%d' % (i, location[1]))
+
+				# block left diag
+				m = 1
+				c = location[1] - location[0]
+				for x_ld in xrange(0, self.board_size):
+					y_ld = m * x_ld + c
+					if y_ld < self.board_size and y_ld > -1:
+						blocked_for_loc.add('%d:%d' % (x_ld, y_ld))
+
+				# block right diag
+				m = -1
+				c = location[0] + location[1]
+				for x_rd in xrange(0, self.board_size):
+					y_rd = m * x_rd + c
+					if y_rd < self.board_size and y_rd > -1:
+						blocked_for_loc.add('%d:%d' % (x_rd, y_rd))
+			blocked.update(blocked_for_loc)
 		return test_loc not in blocked
 
 	def _print_solution(self):
