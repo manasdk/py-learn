@@ -24,7 +24,7 @@ def main(args_):
     longest_sequence = longest_unique_char_seq(args_.words)
     print 'words : %s\nsubs  : %s' % (args_.words, longest_sequence)
 
-
+# ./longest_unique_char_seq.py -w x y z y a b c d
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-w', '--words', nargs='+', type=str, required=True)
