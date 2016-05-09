@@ -1,4 +1,9 @@
 #! /usr/bin/env python
+
+###
+# To run : ./bomberman.py
+###
+
 import operator
 import sys
 
